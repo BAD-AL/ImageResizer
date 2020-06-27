@@ -21,6 +21,8 @@ More options:
 -smallerOnly    Only resize if it results in a smaller size; don't resize if it would make the image larger.
 
 
+
+### Potential usage:
 If you have a lot of TGA files to resize, you might want to do something like:
 
 REM List all .tga files in the current directory and all sub directories to file 'resize.bat'
