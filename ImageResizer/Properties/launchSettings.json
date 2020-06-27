@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ImageResizer": {
+      "commandName": "Project",
+      "commandLineArgs": "all_inf_soldierdesert.tga -h:128 "
+    }
+  }
+}
