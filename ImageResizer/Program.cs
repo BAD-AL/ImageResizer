@@ -9,8 +9,15 @@ namespace ImageResizer
 {
     class Program
     {
+        private static bool sVerboseMode = false; 
+
         static void Main(string[] args)
         {
+            if (args.Length == 0 || args[0] == "/?" || args[0] == "-h")
+            {
+                PrintHelp("");
+                return;
+            }
             // gather arguments
             string infile = GetArg("-infile:", args);
             string outfile = GetArg("-outfile:", args);
@@ -38,6 +45,15 @@ namespace ImageResizer
 
         static void ResizeImage(string infile, string outfileName, int width, int height, bool smallerOnly)
         {
+            if (width == 0)
+                width = height;
+            if (height == 0)
+                height = width;
+            if( height == 0 && width == 0 )
+            {
+                Console.WriteLine("Cannot resize to 0x0; returning...");
+                return;
+            }
             using (var collection = new MagickImageCollection(infile))
             {
                 // This will remove the optimization and change the image to how it looks at that point
@@ -48,19 +64,23 @@ namespace ImageResizer
                 // the height will be calculated with the aspect ratio.
                 foreach (var image in collection)
                 {
-                    if (smallerOnly)
+                    if (smallerOnly && (image.Width <= width || image.Height <= height))
                     {
-                        if( width < image.Width && height < image.Height)
-                            image.Resize(width, height);
+                        VerboseMessage("Operation would not decrease image size, not resizing");
+                        return;
                     }
-                    else 
-                        image.Resize(width, height);
-                        image.Resize(width, height);
+                    image.Resize(width, height);
                 }
 
+                VerboseMessage(string.Format("Resizing {0} to {1}x{2}", infile, width, height));
                 // Save the result
                 collection.Write(outfileName);
             }
+        }
+
+        private static void VerboseMessage(string msg)
+        {
+            if( sVerboseMode) Console.WriteLine(msg);
         }
 
         private static Size GetTargetDimensions(string w, string h)
@@ -80,6 +100,8 @@ namespace ImageResizer
             string retVal = "";
             for (int i = 0; i < args.Length; i++)
             {
+                if (args[i] == "-verbose")
+                    sVerboseMode = true;
                 if(args[i].StartsWith(prefix, StringComparison.OrdinalIgnoreCase) || (prefix == "-infile:" && !args[i].StartsWith("-")))
                 {
                     retVal = args[i].Replace(prefix, "");
@@ -104,6 +126,7 @@ Example: (Resize an image, if one dimension is omitted the given dimension will 
 
 More options:
 -smallerOnly    Only resize if it results in a smaller size; don't resize if it would make the image larger.
+-verbose        Generate more messaging
 ";
             Console.WriteLine(message);
         }
