@@ -1,6 +1,9 @@
 # ImageResizer
 
-A command line program that resizes images from the command line. 
+A program that resizes images from the command line. 
+This program uses Magick.NET-Q16-x86 ( https://github.com/dlemstra/Magick.NET)
+
+Use NuGet interface in Visual studio to acquire package in order to build.
 
 Usage:
     ImageResizer -infile:<inFileName> -outfile:<outFileName> -w:<width> -h:<height>
@@ -23,4 +26,4 @@ If you have a lot of TGA files to resize, you might want to do something like:
 REM List all .tga files in the current directory and all sub directories to file 'resize.bat'
 > dir /b /s *.tga > resize.bat 
 
-Now edit 'resize.bat' using 'find and replace' with a text editor to craft a script that will resize your images.
+Now edit 'resize.bat' using 'find and replace' with a text editor to craft a script that will resize all your images way faster than you could do by hand in a Image editing program.
